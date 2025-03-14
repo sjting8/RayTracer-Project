@@ -125,7 +125,7 @@ glm::vec3 GlossyMaterial::get_direct_lighting(Intersection &intersection, Scene 
             scene.models[idx]->intersect(shadow_ray);
 
         // get closest intersection
-        Intersection closest_intersection;
+        Intersection closest_intersection = {0.0f, vec3(0.0f), vec3(0.0f), nullptr, nullptr};
         closest_intersection.t = std::numeric_limits<float>::max();
         for (unsigned int idx = 0; idx < shadow_ray.intersections.size(); idx++) {
             if (shadow_ray.intersections[idx].t < closest_intersection.t)
