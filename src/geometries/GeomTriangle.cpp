@@ -21,38 +21,46 @@ GeomTriangle::GeomTriangle(std::vector<glm::vec3> &vertices, std::vector<glm::ve
 
 std::vector<Intersection> GeomTriangle::intersect(Ray &ray) {
     using namespace glm;
-    /**
-     * NOTE: Ray is already transformed to the Model coordinate space.
-     */
 
-    // vector to store the intersections
     std::vector<Intersection> intersections;
 
-    /**
-     * TODO: Implement the Ray intersection with the current geometry
-     */
+    vec3 v0 = vertices[0];
+    vec3 v1 = vertices[1];
+    vec3 v2 = vertices[2];
 
-    /**
-     * Once you find the intersection, add it to the `intersections` vector.
-     *
-     * Example:
-     * Suppose the ray intersects the current geometry at a point `vec3 point`
-     * at a distance `float t`, and the unit normal vector at the intersection
-     * point is `vec3 normal`. You would then insert an intersection into the
-     * vector as follows:
-     *
-     * intersections.push_back({t, point, normal, this, nullptr});
-     *
-     * Note:
-     * - Here we pass the Model pointer as `nullptr` because it will be
-     *   populated by the Model::intersect() function call.
-     * - Only add intersections that are in front of the camera, i.e.,
-     *   where t > 0.
-     */
+    vec3 edge1 = v1 - v0;
+    vec3 edge2 = v2 - v0;
 
-    /**
-     * TODO: Update `intersections`
-     */
+    vec3 h = cross(ray.dir, edge2);
+    float a = dot(edge1, h);
+
+    if (a > -0.00001f && a < 0.00001f) {
+        return intersections; // Ray is parallel to triangle
+    }
+
+    float f = 1.0f / a;
+    vec3 s = ray.p0 - v0;
+    float u = f * dot(s, h);
+
+    if (u < 0.0f || u > 1.0f) {
+        return intersections;
+    }
+
+    vec3 q = cross(s, edge1);
+    float v = f * dot(ray.dir, q);
+
+    if (v < 0.0f || u + v > 1.0f) {
+        return intersections;
+    }
+
+    float t = f * dot(edge2, q);
+
+    if (t > 0.00001f) { // Intersection!
+        vec3 intersectionPoint = ray.p0 + ray.dir * t;
+        vec3 normal = normalize(cross(edge1, edge2));
+
+        intersections.push_back({t, intersectionPoint, normal, this, nullptr});
+    }
 
     return intersections;
 }
