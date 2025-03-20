@@ -26,10 +26,10 @@ class Camera {
     int height;
 
     // default values for reset
-    glm::vec3 eye_default = glm::vec3(0.0f, 0.0f, 5.0f);
+    glm::vec3 eye_default = glm::vec3(0.0f, 0.0f, 6.0f);
     // set default target to be a unit step in the -Z direction from the eye:
-    glm::vec3 target_default = glm::vec3(0.0f, 0.0f, 4.0f);
-    glm::vec3 up_default = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 target_default = glm::vec3(0.0f, 0.0f, 5.0f);
+    glm::vec3 up_default = glm::vec3(0.0f, 2.0f, 0.0f);
     float fovy_default = 45.0f;
     float near_default = 0.01f;
     float far_default = 100.0f;
