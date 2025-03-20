@@ -31,10 +31,10 @@ Ray GlossyMaterial::sample_ray_and_update_radiance(Ray &ray, Intersection &inter
         float t = linearRand(0.0f, 1.0f);
 
         // TODO: Update u, v based on Equation (8) in handout
-        float u = 0.0f;
-        float v = 0.0f;
+        float u = 2.0f * M_PI * s;
+        float v = sqrt(1.0f - t);
 
-        vec3 hemisphere_sample = vec3(0.0f);  // TODO: Update value to cosine-weighted sampled direction
+        vec3 hemisphere_sample = vec3(v * cos(u), sqrt(t), v * sin(u));;  // TODO: Update value to cosine-weighted sampled direction
 
         // The direction we sampled above is in local co-ordinate frame
         // we need to align it with the surface normal
@@ -46,7 +46,7 @@ Ray GlossyMaterial::sample_ray_and_update_radiance(Ray &ray, Intersection &inter
          * Note:
          * - C_diffuse = `this->diffuse`
          */
-        vec3 W_diffuse = vec3(0.0f);  // TODO: Calculate the radiance for current bounce
+        vec3 W_diffuse = diffuse * glm::max(dot(normalize(new_dir), normal), 0.0f);;  // TODO: Calculate the radiance for current bounce
 
         // update radiance
         ray.W_wip = ray.W_wip * W_diffuse;
@@ -67,7 +67,7 @@ Ray GlossyMaterial::sample_ray_and_update_radiance(Ray &ray, Intersection &inter
      * TODO: Task 6.2
      * Calculate the perfect mirror reflection direction
      */
-    vec3 reflection_dir = vec3(0.0f);  // TODO: Update with reflection direction
+    vec3 reflection_dir = reflect(ray.dir, normal);  // TODO: Update with reflection direction
 
     // Step 2: Calculate radiance
     /**
@@ -75,7 +75,7 @@ Ray GlossyMaterial::sample_ray_and_update_radiance(Ray &ray, Intersection &inter
      * Note:
      * - C_specular = `this->specular`
      */
-    vec3 W_specular = vec3(0.0f);  // TODO: Calculate the radiance for current bounce
+    vec3 W_specular = specular;  // TODO: Calculate the radiance for current bounce
 
     // update radiance
     ray.W_wip = ray.W_wip * W_specular;
