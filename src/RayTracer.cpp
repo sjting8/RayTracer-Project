@@ -49,42 +49,42 @@ void RayTracer::init(int scene_id) {
 
 Ray RayTracer::ray_thru_pixel(int i, int j) {
     /**
-     * This function generated a ray passing through camera origin
-     * and pixel (i, j)
-     */
-
-    Ray ray;
-    ray.pixel_x_coordinate = i;
-    ray.pixel_y_coordinate = j;
-
-    // p0
-    ray.p0 = glm::vec3(camera.eye);
-
-    /**
-     * TODO: Task 1.2
-     * Randomly sample x and y inside pixel(i, j)
-     */
-    float x = glm::linearRand(0.0f, 1.0f); 
-    float y = glm::linearRand(0.0f, 1.0f); 
-
-    /**
-     * TODO: Task 1.1
-     * calculate and assign direction to ray which is passoing
-     * through current pixel (i, j)
-     */
-    float aspect_ratio = static_cast<float>(camera.width) / camera.height;
-    float fov_rad = glm::radians(camera.fovy);
-
-    float alpha = (2.0f * (i + x) / camera.width - 1.0f) * aspect_ratio * tan(fov_rad / 2.0f);
-    float beta = (1.0f - 2.0f * (j + y) / camera.height) * tan(fov_rad / 2.0f);
-
-    vec3 u(camera.cameraMatrix[0]);
-    vec3 v(camera.cameraMatrix[1]);
-    vec3 w(camera.cameraMatrix[2]);
-
-    ray.dir = glm::normalize(alpha * u + beta * v - w);
-
-    return ray;
+      * This function generated a ray passing through camera origin
+      * and pixel (i, j)
+      */
+ 
+      Ray ray;
+      ray.pixel_x_coordinate = i;
+      ray.pixel_y_coordinate = j;
+  
+      // p0
+      ray.p0 = glm::vec3(camera.eye);
+  
+      /**
+       * TODO: Task 1.2
+       * Randomly sample x and y inside pixel(i, j)
+       */
+      float x = glm::linearRand(0.0f, 1.0f); 
+      float y = glm::linearRand(0.0f, 1.0f); 
+  
+      /**
+       * TODO: Task 1.1
+       * calculate and assign direction to ray which is passing
+       * through current pixel (i, j)
+       */
+      float aspect_ratio = static_cast<float>(camera.width) / camera.height;
+      float fov_rad = glm::radians(camera.fovy);
+  
+      float alpha = (2.0f * (i + x) / camera.width - 1.0f) * aspect_ratio * tan(fov_rad / 2.0f);
+      float beta = (1.0f - 2.0f * (j + y) / camera.height) * tan(fov_rad / 2.0f);
+  
+      vec3 u(camera.cameraMatrix[0]);
+      vec3 v(camera.cameraMatrix[1]);
+      vec3 w(camera.cameraMatrix[2]);
+  
+      ray.dir = glm::normalize(alpha * u + beta * v - w);
+  
+      return ray;
 }
 
 void RayTracer::set_shading_mode(ShadingMode shading_mode) {
@@ -232,7 +232,8 @@ void RayTracer::draw() {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     // Launch consumer threads.
-    int num_threads = std::thread::hardware_concurrency();
+    //int num_threads = std::thread::hardware_concurrency();
+    int num_threads = 1;
     for (int i = 0; i < num_threads; i++) {
         threads.emplace_back(
             std::thread(&RayTracer::trace_ray_thread_callback, this,

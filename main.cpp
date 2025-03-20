@@ -3,7 +3,6 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
-
 // OSX systems need their own headers
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -66,11 +65,6 @@ bool is_integer(const std::string &str) {
     return true;
 }
 
-void lazy_draw_call(int _) {
-    rayTracer.draw();
-    cooldown_active = false;
-}
-
 void initialize(int argc, char **argv) {
     printHelp();
     glClearColor(background[0], background[1], background[2], background[3]);  // background color
@@ -91,10 +85,10 @@ void initialize(int argc, char **argv) {
 }
 
 void display(void) {
-    if (!cooldown_active) {
-        cooldown_active = true;
-        glutTimerFunc(200, lazy_draw_call, 0);  // Set cooldown timer
-    }
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    image.draw();
+    glutSwapBuffers();
+    glFlush();
 }
 
 void saveScreenShot(const char *filename = "test.png") {
@@ -120,31 +114,37 @@ void keyboard(unsigned char key, int x, int y) {
         case 'w':
             rayTracer.set_shading_mode(ShadingMode::NORMAL);
             rayTracer.camera.moveForward(0.2f);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
         case 's':
             rayTracer.set_shading_mode(ShadingMode::NORMAL);
             rayTracer.camera.moveForward(-0.2f);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
         case 'a':
             rayTracer.set_shading_mode(ShadingMode::NORMAL);
             rayTracer.camera.moveRight(-0.2f);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
         case 'd':
             rayTracer.set_shading_mode(ShadingMode::NORMAL);
             rayTracer.camera.moveRight(0.2f);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
         case 'q':
             rayTracer.set_shading_mode(ShadingMode::NORMAL);
             rayTracer.camera.moveUp(-0.2f);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
         case 'e':
             rayTracer.set_shading_mode(ShadingMode::NORMAL);
             rayTracer.camera.moveUp(0.2f);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
 
@@ -152,11 +152,13 @@ void keyboard(unsigned char key, int x, int y) {
         case 'z':
             rayTracer.set_shading_mode(ShadingMode::NORMAL);
             rayTracer.camera.rotateRoll(10.0f);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
         case 'x':
             rayTracer.set_shading_mode(ShadingMode::NORMAL);
             rayTracer.camera.rotateRoll(-10.0f);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
 
@@ -164,11 +166,13 @@ void keyboard(unsigned char key, int x, int y) {
         case '-':
             rayTracer.set_shading_mode(ShadingMode::NORMAL);
             rayTracer.camera.zoom(0.1f);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
         case '+':
             rayTracer.set_shading_mode(ShadingMode::NORMAL);
             rayTracer.camera.zoom(-0.1f);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
 
@@ -176,22 +180,28 @@ void keyboard(unsigned char key, int x, int y) {
         case 'r':
             rayTracer.set_shading_mode(ShadingMode::NORMAL);
             rayTracer.camera.reset();
+            rayTracer.draw();
             glutPostRedisplay();
             break;
 
         // Shading modes
         case ' ':
             rayTracer.set_shading_mode(ShadingMode::RAY_TRACE);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
         case 'n':
             rayTracer.set_shading_mode(ShadingMode::NORMAL);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
         case 'p':
             rayTracer.set_shading_mode(ShadingMode::DEBUG);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
+
+       
         default:
             glutPostRedisplay();
             break;
@@ -203,18 +213,22 @@ void specialKey(int key, int x, int y) {
     switch (key) {
         case GLUT_KEY_UP:  // up
             rayTracer.camera.rotateUp(5.0f);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
         case GLUT_KEY_DOWN:  // down
             rayTracer.camera.rotateUp(-5.0f);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
         case GLUT_KEY_RIGHT:  // right
             rayTracer.camera.rotateRight(-5.0f);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
         case GLUT_KEY_LEFT:  // left
             rayTracer.camera.rotateRight(5.0f);
+            rayTracer.draw();
             glutPostRedisplay();
             break;
     }
@@ -258,7 +272,7 @@ int main(int argc, char **argv) {
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(specialKey);
-
+    rayTracer.draw();  // initial draw to show the scene
     glutMainLoop();
     return 0; /* ANSI C requires main to return int. */
 }

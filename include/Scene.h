@@ -27,7 +27,7 @@ class Scene {
     std::vector<std::unique_ptr<ModelBase>> models;
 
     // To switch between different shading modes
-    ShadingMode shading_mode;
+    ShadingMode shading_mode = ShadingMode::NORMAL;
 
     // List of light sources
     std::vector<ModelBase *> light_sources;
